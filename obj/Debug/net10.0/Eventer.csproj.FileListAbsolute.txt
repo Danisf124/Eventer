@@ -1,0 +1,15 @@
+/home/dania/Eventer/bin/Debug/net10.0/Eventer
+/home/dania/Eventer/bin/Debug/net10.0/Eventer.deps.json
+/home/dania/Eventer/bin/Debug/net10.0/Eventer.runtimeconfig.json
+/home/dania/Eventer/bin/Debug/net10.0/Eventer.dll
+/home/dania/Eventer/bin/Debug/net10.0/Eventer.pdb
+/home/dania/Eventer/obj/Debug/net10.0/Eventer.GeneratedMSBuildEditorConfig.editorconfig
+/home/dania/Eventer/obj/Debug/net10.0/Eventer.AssemblyInfoInputs.cache
+/home/dania/Eventer/obj/Debug/net10.0/Eventer.AssemblyInfo.cs
+/home/dania/Eventer/obj/Debug/net10.0/Eventer.csproj.CoreCompileInputs.cache
+/home/dania/Eventer/obj/Debug/net10.0/Eventer.sourcelink.json
+/home/dania/Eventer/obj/Debug/net10.0/Eventer.dll
+/home/dania/Eventer/obj/Debug/net10.0/refint/Eventer.dll
+/home/dania/Eventer/obj/Debug/net10.0/Eventer.pdb
+/home/dania/Eventer/obj/Debug/net10.0/Eventer.genruntimeconfig.cache
+/home/dania/Eventer/obj/Debug/net10.0/ref/Eventer.dll
