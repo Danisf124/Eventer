@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "q45yfqKZYpk=",
+  "dgSpecHash": "4aNvgZcVdzw=",
   "success": true,
   "projectFilePath": "/home/dania/Eventer/Eventer.csproj",
   "expectedPackageFiles": [
+    "/home/dania/.nuget/packages/bcrypt.net-next/4.1.0/bcrypt.net-next.4.1.0.nupkg.sha512",
     "/home/dania/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.4/microsoft.aspnetcore.app.ref.10.0.4.nupkg.sha512"
   ],
   "logs": []
