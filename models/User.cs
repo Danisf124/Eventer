@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Diagnostics.Tracing;
 using System.Reflection.Metadata.Ecma335;
@@ -36,6 +37,13 @@ namespace Eventer
                     throw new ArgumentException("Name can't be empty");
                 }
 
+                value = value.Trim(); // trimming whitespace
+
+                if(value.Length > 30)
+                {
+                    throw new ArgumentException("Name can't be longer than 30 characters");
+                }
+
                 _name = value;
             }
         }
@@ -51,6 +59,13 @@ namespace Eventer
                     throw new ArgumentException("Surname can't be empty");
                 }
 
+                value = value.Trim(); // trimming whitespace
+
+                if(value.Length > 30)
+                {
+                    throw new ArgumentException("Surname can't be longer than 30 characters");
+                }
+
                 SurName = value;
             }
         }
@@ -64,6 +79,15 @@ namespace Eventer
                 if(string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("Email can't be empty");
+                }
+
+                // Regex check
+
+                string email_pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
+                if(Regex.IsMatch(value, email_pattern))
+                {
+                    throw new ArgumentException("invalid Email format");
                 }
 
                 _email = value;

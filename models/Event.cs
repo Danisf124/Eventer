@@ -28,29 +28,6 @@ namespace Eventer
 
         private double _price;
 
-        public Event (string title, string description, DateTime start_time, 
-        DateTime end_time, Guid location_id, Category category, double price, bool is_active )
-        {
-    
-            Id = Guid.NewGuid();
-            
-            Title = title;
-
-            Description = description;
-
-            StartTime = start_time;
-
-            EndTime = end_time;
-
-            LocationId = location_id;
-
-            EventCategory = category;
-
-            Price = price;
-
-            IsActive = is_active;
-        }
-
         public string Title
         {
             get {return _title;}
@@ -60,6 +37,13 @@ namespace Eventer
                 if(string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("Title can't be empty");
+                }
+
+                value = value.Trim(); // trimming whitespace
+
+                if(value.Length > 100)
+                {
+                    throw new ArgumentException("Title can't be longer than 100 characters");
                 }
 
                 _title = value;
@@ -75,6 +59,13 @@ namespace Eventer
                 if(string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("description can't be empty");
+                }
+
+                value = value.Trim(); // trimming whitespace
+
+                if(value.Length > 1000)
+                {
+                    throw new ArgumentException("Description can't be longer than 1000 characters");
                 }
 
                 _description = value;
@@ -142,10 +133,43 @@ namespace Eventer
 
         public Category EventCategory {get; set;}
 
+        public Event (string title, string description, DateTime start_time, 
+        DateTime end_time, Guid location_id, Category category, double price, bool is_active )
+        {
+    
+            Id = Guid.NewGuid();
+            
+            Title = title;
+
+            Description = description;
+
+            StartTime = start_time;
+
+            EndTime = end_time;
+
+            LocationId = location_id;
+
+            EventCategory = category;
+
+            Price = price;
+
+            IsActive = is_active;
+        }
+
         public override string ToString()
         {
             return $"{EventCategory}, {Title} - {Price} грн, початок:({StartTime:dd.MM.yyyy HH.mm})";
         }
+
+        public void SetPassword()
+        {}
+
+        public void VerifyPassword()
+        {}
+        
+        public void Registration()
+        {}
+
 
 
     }
