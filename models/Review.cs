@@ -12,7 +12,24 @@ namespace Eventer
 
         private int _rating; // from 1 to 5
 
-        public string? Comment {get; set;}
+        private string? _comment;
+
+        public string? Comment 
+        {
+            get {return _comment;}
+
+            set
+            {
+                value = value?.Trim(); // trimming whitespace
+
+                if(value != null && value.Length > 300)
+                {
+                    throw new ArgumentException("Comment can't be longer than 300 characters");
+                }
+
+                _comment = value;
+            }
+        }
 
         public Guid EventId
         {

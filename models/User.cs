@@ -37,6 +37,13 @@ namespace Eventer
                     throw new ArgumentException("Name can't be empty");
                 }
 
+                value = value.Trim(); // trimming whitespace
+
+                if(value.Length > 30)
+                {
+                    throw new ArgumentException("Name can't be longer than 30 characters");
+                }
+
                 _name = value;
             }
         }
@@ -50,6 +57,13 @@ namespace Eventer
                 if(string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("Surname can't be empty");
+                }
+
+                value = value.Trim(); // trimming whitespace
+
+                if(value.Length > 30)
+                {
+                    throw new ArgumentException("Surname can't be longer than 30 characters");
                 }
 
                 SurName = value;

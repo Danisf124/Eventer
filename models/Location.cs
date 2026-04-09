@@ -50,11 +50,19 @@ namespace Eventer
 
             set
             {
+                value = value?.Trim(); // trimming whitespace
+
                 string phone_pattern = @"^\+?\d{10,15}$";
                 if(Regex.IsMatch(value, phone_pattern))
                 {
-                    throw new ArgumentException("Invalid phon format");
+                    throw new ArgumentException("Invalid phone format");
                 }
+
+                if(value != null && value.Length > 30)
+                {
+                    throw new ArgumentException("Contact info can't be longer than 30 characters");
+                }
+
                 _contactInfo = value;
             }
         }

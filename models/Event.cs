@@ -39,6 +39,13 @@ namespace Eventer
                     throw new ArgumentException("Title can't be empty");
                 }
 
+                value = value.Trim(); // trimming whitespace
+
+                if(value.Length > 100)
+                {
+                    throw new ArgumentException("Title can't be longer than 100 characters");
+                }
+
                 _title = value;
             }
         }
@@ -52,6 +59,13 @@ namespace Eventer
                 if(string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("description can't be empty");
+                }
+
+                value = value.Trim(); // trimming whitespace
+
+                if(value.Length > 1000)
+                {
+                    throw new ArgumentException("Description can't be longer than 1000 characters");
                 }
 
                 _description = value;
