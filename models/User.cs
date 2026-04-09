@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System;
 using System.Diagnostics.Tracing;
 using System.Reflection.Metadata.Ecma335;
@@ -64,6 +65,15 @@ namespace Eventer
                 if(string.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("Email can't be empty");
+                }
+
+                // Regex check
+
+                string email_pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
+                if(Regex.IsMatch(value, email_pattern))
+                {
+                    throw new ArgumentException("invalid Email format");
                 }
 
                 _email = value;
