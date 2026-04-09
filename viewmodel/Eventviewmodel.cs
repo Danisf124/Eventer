@@ -8,10 +8,10 @@ namespace Eventer
 {
     internal class EventViewModel
     {
-        public List<Event> Events { get; private set; }
+        public List<Event> Events { get; private set; } 
 
-        public string? ErrorMessage { get; private set; }
-        public bool IsBusy { get; private set; }
+        public string? ErrorMessage { get; private set; } // Error massage for exception
+        public bool IsBusy { get; private set; } // flag for interface blocking
 
         public EventViewModel()
         {
@@ -20,19 +20,25 @@ namespace Eventer
             IsBusy = false;
         }
 
+        // Add Event to list
         public void AddEvent(Event new_event)
         {
             Events.Add(new_event);
         }
 
+        /* Cancel Event in 3 steps:
+            1. Searching Event in list, if can't find: sat null 
+            2. Checking date, if event is leas then an hour, not allow delete
+            3. If everything alright, cancel even(with soft delete) 
+        */
         public void CancelEvent(Guid event_id)
         {
             IsBusy = true;
-            ErrorMessage = null;
+            ErrorMessage = null; // clearing massages
 
             try
             {
-                // trying find Event in Events list, e - element
+                // trying find Event in Events list(with Linq), e - element
                 var target_event = Events.FirstOrDefault(e => e.Id == event_id);
 
                 if(target_event == null)
@@ -40,7 +46,7 @@ namespace Eventer
                     throw new Exception("Can't find Event in list.");
                 }
 
-                // Checking time for delete event
+                // Checking time for cancel event
                 if((target_event.StartTime - DateTime.Now).TotalHours < 1)
                 {
                     throw new Exception("Cannot cancel event! Less than 1 hour left until start.");
@@ -55,7 +61,7 @@ namespace Eventer
             }
             finally
             {
-                IsBusy = false;
+                IsBusy = false; // unblocking interface
             }
         }   
         

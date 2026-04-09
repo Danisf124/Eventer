@@ -93,7 +93,7 @@ namespace Eventer
 
         public override string ToString()
         {
-            return $"Event id - {_eventId}, User id - {_userId}, rating - {_rating}, comment - {Comment}, created at - {CreatedAt}";
+            return $"Event id - {EventId}, User id - {UserId}, rating - {Rating}, comment - {Comment}, created at - {CreatedAt}";
         }
         
     }

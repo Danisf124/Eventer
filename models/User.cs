@@ -24,6 +24,7 @@ namespace Eventer
             Email = email;
             Preferences = new List<Event.Category>();
             SavedEvents = new List<Guid>();
+            RegistrationDate = DateTime.Now;
         }
    
         public string PasswordHash {get; private set;} = string.Empty; // password
@@ -96,7 +97,7 @@ namespace Eventer
             }
         }
 
-        public DateOnly RegistrationDate {get; private set;}
+        public DateTime RegistrationDate {get; private set;}
 
         public List<Event.Category> Preferences {get; private set;}
 

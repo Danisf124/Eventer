@@ -58,7 +58,7 @@ namespace Eventer
                     throw new ArgumentException("Contact info can't be longer than 30 characters");
                 }
 
-                string phone_pattern = @"^\+?\d{10,15}$";
+                string phone_pattern = @"^\+?\d{10,15}$"; // Regex phone pattern
 
                 if(value != null && Regex.IsMatch(value, phone_pattern))
                 {
@@ -69,10 +69,10 @@ namespace Eventer
             }
         }
     
-        public Location(string name, string adders, string? contact_info = null )
+        public Location(string title, string adders, string? contact_info = null )
         {
             Id = Guid.NewGuid();
-            Title = name;
+            Title = title;
             Adders = adders;
             ContactInfo = contact_info;
     
@@ -80,7 +80,7 @@ namespace Eventer
 
         public override string ToString()
         {
-            return $"title - {_title}, adders - {_adders}";
+            return $"title - {Title}, adders - {Adders}, contact info - {ContactInfo}";
         }
 
 

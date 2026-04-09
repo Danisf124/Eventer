@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using BCrypt.Net;
@@ -11,8 +12,8 @@ namespace Eventer
     {
         public List<User> Users {get; private set;}
 
-        public string? ErrorMessage { get; private set; }
-        public bool IsBusy { get; private set; }
+        public string? ErrorMessage { get; private set; }  // Error manages for exception
+        public bool IsBusy { get; private set; } // flag for interface blocking
 
         public UserViewModel()
         {
@@ -21,15 +22,20 @@ namespace Eventer
             IsBusy = false;
         }
 
+        // Add User to list
         public void AddUser(User new_user)
         {
             Users.Add(new_user);
         }
-
+        
+        /*  Registration User 
+            Search for user in list, if user already exist, transfer user to login.
+            return true if operation compleat correct
+        */ 
         public bool RegisterUser(string name, string email, string password)
         {
             IsBusy = true;
-            ErrorMessage = null;
+            ErrorMessage = null; // clear message
 
             try
             {
@@ -39,17 +45,23 @@ namespace Eventer
                     throw new Exception(" User email already exist.");
                 }
 
+                // Password Hash:
+
+                // Checking password, if empty or less then 6 character: throw exception
                 if(string.IsNullOrWhiteSpace(password) || password.Length < 6)
                 {
                     throw new Exception("Password can't be leas than 6 characters");
                 }
 
+                // Hash generating with BCrypt
                 string generated_hash = BCrypt.Net.BCrypt.HashPassword(password);
 
+                // Creating and adding User to list
                 User user = new User(name, email, password);
 
                 AddUser(user);
                 
+                // Operation compleat correct
                 return true;
             }
             catch(Exception ex)
@@ -59,7 +71,7 @@ namespace Eventer
             }
             finally
             {
-                IsBusy = false;
+                IsBusy = false;// Unblocking interface
             }
 
         }
