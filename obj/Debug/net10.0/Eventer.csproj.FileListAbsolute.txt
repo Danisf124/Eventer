@@ -13,3 +13,6 @@
 /home/dania/Eventer/obj/Debug/net10.0/Eventer.pdb
 /home/dania/Eventer/obj/Debug/net10.0/Eventer.genruntimeconfig.cache
 /home/dania/Eventer/obj/Debug/net10.0/ref/Eventer.dll
+/home/dania/Eventer/bin/Debug/net10.0/BCrypt.Net-Next.dll
+/home/dania/Eventer/obj/Debug/net10.0/Eventer.csproj.AssemblyReference.cache
+/home/dania/Eventer/obj/Debug/net10.0/Eventer.csproj.Up2Date

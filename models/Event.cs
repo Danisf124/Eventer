@@ -9,9 +9,9 @@ namespace Eventer
     {
         public Guid Id {get; private set;}
 
-        private string _title;
+        private string _title = string.Empty;
 
-        private string _description;
+        private string _description = string.Empty;
 
         private DateTime _startTime;
 
@@ -160,17 +160,6 @@ namespace Eventer
         {
             return $"{EventCategory}, {Title} - {Price} грн, початок:({StartTime:dd.MM.yyyy HH.mm})";
         }
-
-        public void SetPassword()
-        {}
-
-        public void VerifyPassword()
-        {}
-        
-        public void Registration()
-        {}
-
-
 
     }
 }

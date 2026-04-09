@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace Eventer
@@ -8,9 +9,9 @@ namespace Eventer
     {
         public Guid Id {get; private set;}
 
-        private string _title;
+        private string _title = string.Empty;
 
-        private string _adders;
+        private string _adders = string.Empty;
 
         private string? _contactInfo;
 
@@ -52,15 +53,16 @@ namespace Eventer
             {
                 value = value?.Trim(); // trimming whitespace
 
-                string phone_pattern = @"^\+?\d{10,15}$";
-                if(Regex.IsMatch(value, phone_pattern))
-                {
-                    throw new ArgumentException("Invalid phone format");
-                }
-
                 if(value != null && value.Length > 30)
                 {
                     throw new ArgumentException("Contact info can't be longer than 30 characters");
+                }
+
+                string phone_pattern = @"^\+?\d{10,15}$";
+
+                if(value != null && Regex.IsMatch(value, phone_pattern))
+                {
+                    throw new ArgumentException("Invalid phone format");
                 }
 
                 _contactInfo = value;

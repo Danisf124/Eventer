@@ -11,20 +11,22 @@ namespace Eventer
         //fields
         public Guid Id { get; private set; }
         
-        private string _name;
+        private string _name = string.Empty;
         
-        private string _surName;
+        private string _surName = string.Empty;
         
-        private string _email;
+        private string _email = string.Empty;
         
         public User(string name, string sur_name, string email)
         {
             Name = name;
             SurName = sur_name;
             Email = email;
+            Preferences = new List<Event.Category>();
+            SavedEvents = new List<Guid>();
         }
    
-        public string PasswordHash {get; private set;} // password
+        public string PasswordHash {get; private set;} = string.Empty; // password
 
         public string Name
         {
