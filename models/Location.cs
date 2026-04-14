@@ -11,7 +11,7 @@ namespace Eventer
 
         private string _title = string.Empty;
 
-        private string _adders = string.Empty;
+        private string _address = string.Empty;
 
         private string? _contactInfo;
 
@@ -26,22 +26,36 @@ namespace Eventer
                     throw new AggregateException("title can't be empty");
                 }
 
+                value = value.Trim();
+
+                if(value.Length > 100)
+                {
+                    throw new ArgumentException("Title can't be longer than 100 character");
+                }
+
                 _title = value;
             }
         }
 
-        public string Adders
+        public string Address
         {
-            get {return _adders;}
+            get {return _address;}
 
             set
             {
-                if( string.IsNullOrWhiteSpace(value))
+                if(string.IsNullOrWhiteSpace(value))
                 {
-                    throw new AggregateException("adders can't be empty");
+                    throw new AggregateException("address can't be empty");
                 }
 
-                _adders = value;
+                value = value.Trim();
+
+                if(value.Length > 30)
+                {
+                    throw new AggregateException("address can't be longer than 30 characters");
+                }
+
+                _address = value;
             }
         }
 
@@ -73,14 +87,14 @@ namespace Eventer
         {
             Id = Guid.NewGuid();
             Title = title;
-            Adders = adders;
+            Address = adders;
             ContactInfo = contact_info;
     
         }
 
         public override string ToString()
         {
-            return $"title - {Title}, adders - {Adders}, contact info - {ContactInfo}";
+            return $"title - {Title}, adders - {Address}, contact info - {ContactInfo}";
         }
 
 

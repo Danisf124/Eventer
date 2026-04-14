@@ -34,36 +34,6 @@ namespace Eventer
 
             try
             {
-                if(string.IsNullOrWhiteSpace(title))
-                {
-                    throw new Exception("Title can't be empty!");
-                }
-
-                if(string.IsNullOrWhiteSpace(description))
-                {
-                    throw new Exception("Description can't be empty!");
-                }
-
-                if(start_time < DateTime.Now)
-                {
-                    throw new Exception("Start time can't be in past");
-                }
-
-                if(end_time < start_time)
-                {
-                    throw new Exception("End time can't be behind start");
-                }
-
-                if(price < 0)
-                {
-                    throw new Exception("Price cant'be least than 0");
-                }
-
-                if(location_id == Guid.Empty)
-                {
-                    throw new Exception("Location id is empty");
-                }
-                
                 Event @event = new Event(title, description, start_time, end_time, location_id, category, price, true);
                 AddEvent(@event);
 

@@ -27,7 +27,7 @@ namespace Eventer
             RegistrationDate = DateTime.Now;
         }
    
-        public string PasswordHash {get; private set;} = string.Empty; // password
+        public string PasswordHash {get; set;} = string.Empty; // password
 
         public string Name
         {
@@ -69,7 +69,7 @@ namespace Eventer
                     throw new ArgumentException("Surname can't be longer than 30 characters");
                 }
 
-                SurName = value;
+                _surName = value;
             }
         }
 
@@ -86,12 +86,20 @@ namespace Eventer
 
                 // Regex check
 
-                string email_pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+                value = value.Trim();
 
-                if(Regex.IsMatch(value, email_pattern))
+                if(value.Length > 30)
+                {
+                    throw new ArgumentException("Email can't be longer than 30 characters");
+                }
+                
+                string email_pattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
+
+                if(!Regex.IsMatch(value, email_pattern))
                 {
                     throw new ArgumentException("invalid Email format");
                 }
+                
 
                 _email = value;
             }

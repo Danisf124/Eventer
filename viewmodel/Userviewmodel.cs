@@ -31,12 +31,18 @@ namespace Eventer
             Users.Add(new_user);
         }
         
+        public void SetPassword(string password, User user)
+        {
+            // Hash generating with BCrypt
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
         /*  
             Registration User 
             Search for user in list, if user already exist, transfer user to login.
             return true if operation compleat correct.
         */ 
-        public bool RegisterUser(string name, string email, string password)
+        public bool RegisterUser(string name, string sur_name, string email, string password)
         {
             IsBusy = true;
             ErrorMessage = null; // clear message
@@ -56,13 +62,12 @@ namespace Eventer
                 {
                     throw new Exception("Password can't be leas than 6 characters");
                 }
-
-                // Hash generating with BCrypt
-                string generated_hash = BCrypt.Net.BCrypt.HashPassword(password);
-
+                
                 // Creating and adding User to list
-                User user = new User(name, email, password);
+                User user = new User(name, sur_name, email);
 
+                SetPassword(password, user);
+              
                 AddUser(user);
                 
                 // Operation compleat correct
