@@ -23,10 +23,41 @@ namespace Eventer
             Locations.Add(location); 
         }
 
-        public void CreateLocation(string title, string adders, string? contact_info = null)
+        public bool CreateLocation(string title, string address, string? contact_info = null)
         {
-            Location location = new Location(title, adders, null);
-            AddLocation(location);
+            IsBusy = true;
+            ErrorMessage = null;
+
+            try
+            {
+                if(string.IsNullOrWhiteSpace(title))
+                {
+                    throw new Exception("Tile can't be empty");
+                }
+
+                if(string.IsNullOrWhiteSpace(address))
+                {
+                    throw new Exception("address can't be empty");
+                }
+
+                Location location = new Location(title, address, contact_info = null);
+
+                AddLocation(location);
+
+                return true;
+                
+            }   
+            catch(Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                return false;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+
         }
 
         

@@ -1,4 +1,5 @@
 using System;
+using System.Reflection.Metadata;
 
 namespace Eventer
 {
@@ -13,6 +14,8 @@ namespace Eventer
         private int _rating; // from 1 to 5
 
         private string? _comment;
+
+        public bool? EmptyComment {get; set;}
 
         public string? Comment 
         {
