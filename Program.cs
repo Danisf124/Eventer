@@ -16,6 +16,8 @@ namespace Eventer
         static void Main(string[] args)
         {
 
+            var user = new UserViewModel();
+        
             
 
         }

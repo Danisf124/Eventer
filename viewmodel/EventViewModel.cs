@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 
 namespace Eventer
 {
@@ -65,5 +66,42 @@ namespace Eventer
             }
         }   
         
+        
+        public List<Event> SearchEvents(string? keyword = null, Event.Category? category = null)
+        {
+            
+            IEnumerable<Event> query = Events;
+
+            
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(e => e.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (category.HasValue)
+            {
+                query = query.Where(e => e.EventCategory == category.Value);
+            }
+
+            
+            return query.OrderByDescending(e => e.StartTime).ToList();
+        }
+
+    
+
+       
+        public List<Event> GetEvents(string keyword = "")
+        {
+            
+            var query = Events.Where(e => e.IsActive);
+           
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+               
+                query = query.Where(e => e.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+            }
+            
+            return query.OrderBy(e => e.StartTime).ToList();
+        }
     }
 }
