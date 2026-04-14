@@ -13,11 +13,19 @@ namespace Eventer
 {
     class Program
     {
+
+        public void GetInfo()
+        {
+            Console.WriteLine("Enter name ");
+            
+        }
+
         static void Main(string[] args)
         {
 
             var user = new UserViewModel();
-        
+
+            
             
 
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Reflection.Metadata;
+using System.Runtime.Serialization;
 
 namespace Eventer
 {
@@ -20,6 +21,12 @@ namespace Eventer
         public void AddLocation(Location location)
         {
             Locations.Add(location); 
+        }
+
+        public void CreateLocation(string title, string adders, string? contact_info = null)
+        {
+            Location location = new Location(title, adders, null);
+            AddLocation(location);
         }
 
         

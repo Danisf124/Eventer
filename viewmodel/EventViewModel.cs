@@ -27,6 +27,55 @@ namespace Eventer
             Events.Add(new_event);
         }
 
+        public bool CreateEvent(string title, string description, DateTime start_time, DateTime end_time, Event.Category category, float price, Guid location_id)
+        {
+            IsBusy = true;
+            ErrorMessage = null;
+
+            try
+            {
+                if(string.IsNullOrWhiteSpace(title))
+                {
+                    throw new Exception("Title can't be empty!");
+                }
+
+                if(string.IsNullOrWhiteSpace(description))
+                {
+                    throw new Exception("Description can't be empty!");
+                }
+
+                if(start_time < DateTime.Now)
+                {
+                    throw new Exception("Start time can't be in past");
+                }
+
+                if(end_time < start_time)
+                {
+                    throw new Exception("End time can't be behind start");
+                }
+
+                if(price < 0)
+                {
+                    throw new Exception("Price cant'be least than 0");
+                }
+                
+                Event @event = new Event(title, description, start_time, end_time, location_id, category, price, true);
+                AddEvent(@event);
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                return false;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
+
         /* Cancel Event in 3 steps:
             1. Searching Event in list, if can't find: sat null 
             2. Checking date, if event is leas then an hour, not allow delete
@@ -88,8 +137,6 @@ namespace Eventer
         }
 
     
-
-       
         public List<Event> GetEvents(string keyword = "")
         {
             
@@ -100,7 +147,7 @@ namespace Eventer
                
                 query = query.Where(e => e.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase));
             }
-            
+
             return query.OrderBy(e => e.StartTime).ToList();
         }
     }
