@@ -27,14 +27,14 @@ namespace Eventer
             Events.Add(new_event);
         }
 
-        public bool CreateEvent(string title, string description, DateTime start_time, DateTime end_time, Event.Category category, float price, Guid location_id)
+        public bool CreateEvent(string title, string description, DateTime start_time, DateTime end_time, Event.Category category, float price, Guid location_id, string owner_email)
         {
             IsBusy = true;
             ErrorMessage = null;
 
             try
             {
-                Event @event = new Event(title, description, start_time, end_time, location_id, category, price, true);
+                Event @event = new Event(title, description, start_time, end_time, location_id, category, price, owner_email);
                 AddEvent(@event);
 
                 return true;

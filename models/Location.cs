@@ -94,7 +94,7 @@ namespace Eventer
 
         public override string ToString()
         {
-            return $"title - {Title}, adders - {Address}, contact info - {ContactInfo}";
+            return $"{Title} - {Address}";
         }
 
 

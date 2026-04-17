@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Net.WebSockets;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Eventer
 {
@@ -18,6 +19,8 @@ namespace Eventer
         private DateTime _endTime;
 
         private Guid _locationId;
+
+        private string _ownerEmail;
 
         public enum Category
         {
@@ -41,14 +44,16 @@ namespace Eventer
 
                 value = value.Trim(); // trimming whitespace
 
-                if(value.Length > 100)
+                if(value.Length > 50)
                 {
-                    throw new ArgumentException("Title can't be longer than 100 characters");
+                    throw new ArgumentException("Title can't be longer than 50 characters");
                 }
 
                 _title = value;
             }
         }
+
+
 
         public string Description
         {
@@ -63,9 +68,9 @@ namespace Eventer
 
                 value = value.Trim(); // trimming whitespace
 
-                if(value.Length > 1000)
+                if(value.Length > 500)
                 {
-                    throw new ArgumentException("Description can't be longer than 1000 characters");
+                    throw new ArgumentException("Description can't be longer than 500 characters");
                 }
 
                 _description = value;
@@ -129,12 +134,41 @@ namespace Eventer
             }
         }
 
+        public string OwnerEmail
+        {
+            get {return _ownerEmail;}
+
+            set
+            {
+                if(string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Owner email can't be empty");
+                }
+
+                // Regex check
+
+                value = value.Trim();
+
+                if(value.Length > 30)
+                {
+                    throw new ArgumentException("Email can't be longer than 30 characters");
+                }
+                
+                string email_pattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
+
+                if(!Regex.IsMatch(value, email_pattern))
+                {
+                    throw new ArgumentException("invalid Email format");
+                }
+            }
+        }
+
         public bool IsActive {get; set;}
 
         public Category EventCategory {get; set;}
 
         public Event (string title, string description, DateTime start_time, 
-        DateTime end_time, Guid location_id, Category category, double price, bool is_active )
+        DateTime end_time, Guid location_id, Category category, double price, string owner_email)
         {
     
             Id = Guid.NewGuid();
@@ -153,11 +187,15 @@ namespace Eventer
 
             Price = price;
 
-            IsActive = is_active;
+            IsActive = true;
+
+            OwnerEmail = owner_email;
         }
 
         public override string ToString()
         {
+            string formattedDate = StartTime.ToString("yyyy-MM-dd HH:mm");
+
             return $"{EventCategory}, {Title} - {Price} грн, початок:({StartTime:dd.MM.yyyy HH.mm})";
         }
 

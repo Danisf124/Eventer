@@ -9,13 +9,15 @@ namespace Eventer
         public List<Location> Locations {get; private set;}
 
         public string? ErrorMessage {get; private set;}
-        public bool IsBusy {get; private set;}
+        //public bool IsBusy {get; private set;}
 
         public LocationViewModel()
         {
             ErrorMessage = null;
-            IsBusy = false;
+            //IsBusy = false;
             Locations = new List<Location>();
+
+            CreateLocation("nobody know where", "wall st. 12"); // seeding for debag
         }
         
         public void AddLocation(Location location)
@@ -25,19 +27,14 @@ namespace Eventer
 
         public bool CreateLocation(string title, string address, string? contact_info = null)
         {
-            IsBusy = true;
+            //IsBusy = true;
             ErrorMessage = null;
 
             try
             {
-                if(string.IsNullOrWhiteSpace(title))
+                if (Locations.Any(l => l.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
                 {
-                    throw new Exception("Tile can't be empty");
-                }
-
-                if(string.IsNullOrWhiteSpace(address))
-                {
-                    throw new Exception("address can't be empty");
+                    throw new Exception("Location already exist");
                 }
 
                 Location location = new Location(title, address, contact_info = null);
@@ -52,15 +49,7 @@ namespace Eventer
                 ErrorMessage = ex.Message;
                 return false;
             }
-            finally
-            {
-                IsBusy = false;
-            }
-
-
         }
-
-        
 
     }
 }
