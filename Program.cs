@@ -19,96 +19,148 @@ namespace Eventer
 
         static EventViewModel eventViewModel = new EventViewModel();
 
+        enum AppState
+        {
+            Auth,
+            MainMenu,
+            EventMenu,
+            UserMenu
+        }
+
+        static AppState appState = AppState.Auth;
+
         static void Main(string[] args)
         {
 
             Console.WriteLine(" Welcome To Eventer ");
 
-            bool loginOrRegistered = false;
-
             while(true)
             {
-                // Registration / login cycle
-                while(!loginOrRegistered)
+                switch(appState)
                 {
-                    Console.WriteLine("[ 0 ] - exit ");
-                    Console.WriteLine("[ 1 ] - Registration ");
-                    Console.WriteLine("[ 2 ] - Login ");
-                    string choice = Console.ReadLine() ?? "";
-                    
-                    switch (choice)
-                    {
-                        case "0":
-                            Console.WriteLine("Goodbye");
-                            userViewModel.LogOut();
-                            Environment.Exit(0);
-                            break;
-
-                        case "1":
-
-                            if(Registration())
-                            {
-                                loginOrRegistered = true;
-                                break;
-                            }
-                        
-                            break;
-
-                        case "2":
-                            
-                            if(Login())
-                            {
-                                loginOrRegistered = true;
-                                break;
-                            }
-
-                            break;
-
-                        default:
-                            Console.WriteLine("Invalid option");
-                            break;
-
-                    }
+                    case AppState.Auth:
+                        ShowAuth();
+                        break;
+                    case AppState.MainMenu:
+                        ShowMainMenu();
+                        break;
+                    case AppState.EventMenu:
+                        ShowEventMenu();
+                        break;
                 }
-                
-                while(loginOrRegistered)
+            }
+
+        }
+
+
+        static void ShowAuth()
+        {
+            while(appState == AppState.Auth)
+            {
+                Console.WriteLine("[ 0 ] - Exit");
+                Console.WriteLine("[ 1 ] - Registration");
+                Console.WriteLine("[ 2 ] - Login");
+                string input = Console.ReadLine() ?? "";
+
+                switch (input)
                 {
-                    Console.WriteLine("-------------------");
-                    Console.WriteLine("Choose your option");
-                    Console.WriteLine("[ 0 ] - Exit ");
-                    Console.WriteLine("[ 1 ] - Find Event ");
-                    Console.WriteLine("[ 2 ] - Create Event ");
-                    Console.WriteLine("[ 3 ] - Logout");
-                    
-                    string choice = Console.ReadLine() ?? "";
+                    case "0":
+                        Console.WriteLine("Goodbye");
+                        userViewModel.LogOut();
+                        Environment.Exit(0);
+                        break;
 
-                    switch (choice)
-                    {
-                        case "0":
-                            Console.WriteLine("Goodbye");
-                            userViewModel.LogOut();
-                            Environment.Exit(0);
-                            break;
+                    case "1":
+                        if(Registration())
+                        {
+                            appState = AppState.MainMenu;
+                        }
 
-                        case "1":
-                            FindEvent();
-                            break;
-                        case "2":
-                            CreateEvent();
-                            break;
-                        case "3":
-                            loginOrRegistered = false;
-                            break;
-                        default:
-                            Console.WriteLine("Invalid option");
-                            break;
-                    }
+                        break;
                     
+                    case "2":
+                        if(Login())
+                        {
+                            appState = AppState.MainMenu;
+                        }
+
+                        break;
+
+                    default:
+                        Console.WriteLine(" Invalid input");
+                        break;
                 }
-                
             }
         }
 
+        static void ShowMainMenu()
+        {
+            while(appState == AppState.MainMenu)
+            {
+                Console.WriteLine("[ 1 ] - User information");
+                Console.WriteLine("[ 2 ] - Create event");
+                Console.WriteLine("[ 3 ] - Find event");
+                Console.WriteLine("[ 4 ] - Logout");
+                string input = Console.ReadLine() ?? "";
+
+                switch(input)
+                {
+                    case "1":
+                        appState = AppState.UserMenu;
+                        break;
+
+                    case "2":
+                        CreateEvent();
+                        break;
+
+                    case "3":
+                        appState = AppState.EventMenu;
+                        break;
+
+                    case "4":
+                        userViewModel.LogOut();
+                        appState = AppState.Auth;
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid input");
+                        break;
+                }
+
+            }
+        }
+
+        static void ShowEventMenu()
+        {
+            while(appState == AppState.EventMenu)
+            {
+                Console.WriteLine("[ 1 ] - Event information");
+                Console.WriteLine("[ 2 ] - Event registration");
+                Console.WriteLine("[ 3 ] - Cancel event");
+                Console.WriteLine("[ 4 ] - Main menu");
+                string input = Console.ReadLine() ?? "";
+
+                switch(input)
+                {
+                    case "1":
+                        break;
+
+                    case "2":
+                        break;
+
+                    case "3":
+                        break;
+
+                    case "4":
+                        appState = AppState.MainMenu;
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid input");
+                        break;
+                }
+            }
+        }
 
         static void CreateLocation()
         {
@@ -378,7 +430,7 @@ namespace Eventer
             }
         }
 
-        static void FindEvent()
+        static Event? FindEvent()
         {
             Console.WriteLine("------- EVENT FIND -------");
 
@@ -392,12 +444,14 @@ namespace Eventer
 
             Event? selectedEvent = ChooseEventFromList(find_event);
 
-            if(selectedEvent != null)
+            if(selectedEvent == null)
             {
-                Console.WriteLine("------- EVENT OPTIONS -------");
-                Console.WriteLine($"title - {selectedEvent.Title}");
-                Console.WriteLine($"description - {selectedEvent.Description}");
-                Console.WriteLine($"Location - {selectedEvent.LocationId}");
+                Console.WriteLine("Event not found");
+                return null;
+            }
+            else
+            {
+                return selectedEvent;
             }
             
         }
