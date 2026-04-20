@@ -9,30 +9,27 @@ using System.Threading.Tasks.Dataflow;
 using Eventer;
 
 
-
-
-
 namespace Eventer
 {
     class Program
     {
-        static UserViewModel user_view_model = new UserViewModel();
+        static UserViewModel userViewModel = new UserViewModel();
         
-        static LocationViewModel location_view_model = new LocationViewModel();
+        static LocationViewModel locationViewModel = new LocationViewModel();
 
-        static EventViewModel event_view_model = new EventViewModel();
+        static EventViewModel eventViewModel = new EventViewModel();
 
         static void Main(string[] args)
         {
 
             Console.WriteLine(" Welcome To Eventer ");
 
-            bool login_or_registered = false;
+            bool loginOrRegistered = false;
 
             while(true)
             {
                 // Registration / login cycle
-                while(!login_or_registered)
+                while(!loginOrRegistered)
                 {
                     Console.WriteLine("[ 0 ] - exit ");
                     Console.WriteLine("[ 1 ] - Registration ");
@@ -43,7 +40,7 @@ namespace Eventer
                     {
                         case "0":
                             Console.WriteLine("Goodbye");
-                            user_view_model.LogOut();
+                            userViewModel.LogOut();
                             Environment.Exit(0);
                             break;
 
@@ -51,7 +48,7 @@ namespace Eventer
 
                             if(Registration())
                             {
-                                login_or_registered = true;
+                                loginOrRegistered = true;
                                 break;
                             }
                         
@@ -61,7 +58,7 @@ namespace Eventer
                             
                             if(Login())
                             {
-                                login_or_registered = true;
+                                loginOrRegistered = true;
                                 break;
                             }
 
@@ -74,7 +71,7 @@ namespace Eventer
                     }
                 }
                 
-                while(login_or_registered)
+                while(loginOrRegistered)
                 {
                     Console.WriteLine("-------------------");
                     Console.WriteLine("Choose your option");
@@ -89,7 +86,7 @@ namespace Eventer
                     {
                         case "0":
                             Console.WriteLine("Goodbye");
-                            user_view_model.LogOut();
+                            userViewModel.LogOut();
                             Environment.Exit(0);
                             break;
 
@@ -100,7 +97,7 @@ namespace Eventer
                             CreateEvent();
                             break;
                         case "3":
-                            login_or_registered = false;
+                            loginOrRegistered = false;
                             break;
                         default:
                             Console.WriteLine("Invalid option");
@@ -124,14 +121,14 @@ namespace Eventer
             Console.WriteLine("Location contact information: +380********* (you can skip this) - ");
             string? contactInfo = Console.ReadLine();
 
-            if(location_view_model.CreateLocation(title, address, contactInfo))
+            if(locationViewModel.CreateLocation(title, address, contactInfo))
             {
                 Console.WriteLine("Location created ");
                 
             }
             else
             {
-                Console.WriteLine($"Error: {location_view_model.ErrorMessage}");
+                Console.WriteLine($"Error: {locationViewModel.ErrorMessage}");
             }
 
         }
@@ -154,11 +151,11 @@ namespace Eventer
             }
         }
 
-        static Guid ChooseLocation(LocationViewModel location_view_model)
+        static Guid ChooseLocation(LocationViewModel locationViewModel)
         {
             Console.WriteLine("--------- LOCATIONS ---------");
 
-            List<Location> locations = location_view_model.Locations;
+            List<Location> locations = locationViewModel.Locations;
 
             if(locations.Count == 0)
             {
@@ -176,10 +173,10 @@ namespace Eventer
 
             if(int.TryParse(input, out int choice) && (choice > 0) && (choice <= locations.Count))
             {
-                var selected_location = locations[choice- 1];
-                Console.WriteLine($"You choose: {selected_location.Title}");
+                var selectedLocation = locations[choice- 1];
+                Console.WriteLine($"You choose: {selectedLocation.Title}");
 
-                return selected_location.Id;
+                return selectedLocation.Id;
             }
             else
             {
@@ -210,10 +207,10 @@ namespace Eventer
 
                 if(int.TryParse(input, out int choice) && (choice > 0) && (choice <= categories.Length))
                 {
-                    var selected_category = categories[choice - 1];
+                    var selectedCategory = categories[choice - 1];
 
-                    Console.WriteLine($"You choose {selected_category}");
-                    return selected_category;
+                    Console.WriteLine($"You choose {selectedCategory}");
+                    return selectedCategory;
                 }
                 else
                 {
@@ -253,9 +250,9 @@ namespace Eventer
 
                     if((choice > 0) && (choice <= categories.Length))
                     {
-                        var selected_category = categories[choice - 1];
-                        Console.WriteLine($"You choose {selected_category}");
-                        return selected_category;
+                        var selectedCategory = categories[choice - 1];
+                        Console.WriteLine($"You choose {selectedCategory}");
+                        return selectedCategory;
                     }
 
                 }
@@ -298,10 +295,10 @@ namespace Eventer
             string description = Console.ReadLine() ?? "";
 
             Console.WriteLine("Event start time ");
-            DateTime start_time = GetDateFromUser("Use this format: 2026-05-20 18:30");
+            DateTime startTime = GetDateFromUser("Use this format: 2026-05-20 18:30");
 
             Console.WriteLine("Event end time ");
-            DateTime end_time = GetDateFromUser("Use this format: 2026-05-20 18:30");
+            DateTime endTime = GetDateFromUser("Use this format: 2026-05-20 18:30");
 
             Console.WriteLine("Event Location ");
 
@@ -320,7 +317,7 @@ namespace Eventer
                         CreateLocation();
                         break;
                     case "2":
-                        locationId = ChooseLocation(location_view_model);
+                        locationId = ChooseLocation(locationViewModel);
                         isLocationCreate = true;
                         break;
                     default:
@@ -336,9 +333,9 @@ namespace Eventer
             Console.Write("Event price (in UAH) - ");
             float price = GetPriceFromUser();
 
-            string current_email = user_view_model.CurrentUser!.Email;
+            string current_email = userViewModel.CurrentUser!.Email;
 
-            event_view_model.CreateEvent(title, description, start_time, end_time, category, price, locationId, current_email);
+            eventViewModel.CreateEvent(title, description, startTime, endTime, category, price, locationId, current_email);
 
         }
 
@@ -391,16 +388,16 @@ namespace Eventer
             Console.WriteLine("Event Category ");
             Event.Category? category = FindCategory();
             
-            var find_event = event_view_model.SearchEvents(name, category);
+            var find_event = eventViewModel.SearchEvents(name, category);
 
-            Event? selected_event = ChooseEventFromList(find_event);
+            Event? selectedEvent = ChooseEventFromList(find_event);
 
-            if(selected_event != null)
+            if(selectedEvent != null)
             {
                 Console.WriteLine("------- EVENT OPTIONS -------");
-                Console.WriteLine($"title - {selected_event.Title}");
-                Console.WriteLine($"description - {selected_event.Description}");
-                Console.WriteLine($"Location - {selected_event.LocationId}");
+                Console.WriteLine($"title - {selectedEvent.Title}");
+                Console.WriteLine($"description - {selectedEvent.Description}");
+                Console.WriteLine($"Location - {selectedEvent.LocationId}");
             }
             
         }
@@ -423,17 +420,17 @@ namespace Eventer
             Console.Write("Create password, at least 6 characters - ");
             string password = Console.ReadLine() ?? "";
 
-            bool is_success = user_view_model.RegisterUser(name, sur_name, email, password);
+            bool isSuccess = userViewModel.RegisterUser(name, sur_name, email, password);
 
-            if(is_success)
+            if(isSuccess)
             {
                 Console.WriteLine(" Registration complete without problems ");
-                Console.WriteLine($"DEBUG: Users in list: {user_view_model.Users.Count}");
+                Console.WriteLine($"DEBUG: Users in list: {userViewModel.Users.Count}");
                 return true;
             }
             else
             {
-                Console.WriteLine($"Something went wrong, Error: {user_view_model.ErrorMessage}\n");
+                Console.WriteLine($"Something went wrong, Error: {userViewModel.ErrorMessage}\n");
                 return false;
             }
             
@@ -450,17 +447,17 @@ namespace Eventer
             Console.Write("Your password - ");
             string password = Console.ReadLine() ?? "";
 
-            bool is_success = user_view_model.LoginUser(email, password);
+            bool isSuccess = userViewModel.LoginUser(email, password);
 
-            if(is_success)
+            if(isSuccess)
             {
                 Console.WriteLine(" Login complete without problems ");
-                Console.WriteLine($"DEBAG: Users in list: {user_view_model.Users.Count}");
+                Console.WriteLine($"DEBAG: Users in list: {userViewModel.Users.Count}");
                 return true;
             }
             else
             {
-                Console.WriteLine($"Something went wrong, Error: {user_view_model.ErrorMessage}\n");
+                Console.WriteLine($"Something went wrong, Error: {userViewModel.ErrorMessage}\n");
                 return false;
             }
             
