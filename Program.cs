@@ -49,8 +49,6 @@ namespace Eventer
 
                         case "1":
 
-                            login_or_registered = true;
-
                             if(Registration())
                             {
                                 login_or_registered = true;
@@ -80,7 +78,7 @@ namespace Eventer
                 {
                     Console.WriteLine("-------------------");
                     Console.WriteLine("Choose your option");
-                    Console.WriteLine("[ 0 ] - exit ");
+                    Console.WriteLine("[ 0 ] - Exit ");
                     Console.WriteLine("[ 1 ] - Find Event ");
                     Console.WriteLine("[ 2 ] - Create Event ");
                     Console.WriteLine("[ 3 ] - Logout");
@@ -113,12 +111,36 @@ namespace Eventer
                 
             }
         }
-            
-        static DateTime GetDateFromUser(string massage)
+
+
+        static void CreateLocation()
+        {
+            Console.WriteLine("Location title - ");
+            string title = Console.ReadLine() ?? "";
+
+            Console.WriteLine("Location address - ");
+            string address = Console.ReadLine() ?? "";
+
+            Console.WriteLine("Location contact information: +380********* (you can skip this) - ");
+            string? contactInfo = Console.ReadLine();
+
+            if(location_view_model.CreateLocation(title, address, contactInfo))
+            {
+                Console.WriteLine("Location created ");
+                
+            }
+            else
+            {
+                Console.WriteLine($"Error: {location_view_model.ErrorMessage}");
+            }
+
+        }
+
+        static DateTime GetDateFromUser(string message)
         {
             while(true)
             {
-                Console.WriteLine(massage);
+                Console.WriteLine(message);
                 string input = Console.ReadLine() ?? "";
 
                 if(DateTime.TryParse(input, out DateTime result_date))
@@ -229,7 +251,7 @@ namespace Eventer
                         return null;
                     }
 
-                    if((choice > 0) && (choice < categories.Length))
+                    if((choice > 0) && (choice <= categories.Length))
                     {
                         var selected_category = categories[choice - 1];
                         Console.WriteLine($"You choose {selected_category}");
@@ -269,10 +291,10 @@ namespace Eventer
 
             Console.WriteLine("Please, enter your information");
 
-            Console.Write("Event title (leas than 50 characters) - ");
+            Console.Write("Event title (less than 50 characters) - ");
             string title = Console.ReadLine() ?? "";
 
-            Console.Write("Event description (leas than 500 characters) -  ");
+            Console.Write("Event description (less than 500 characters) -  ");
             string description = Console.ReadLine() ?? "";
 
             Console.WriteLine("Event start time ");
@@ -282,7 +304,31 @@ namespace Eventer
             DateTime end_time = GetDateFromUser("Use this format: 2026-05-20 18:30");
 
             Console.WriteLine("Event Location ");
-            Guid location_id = ChooseLocation(location_view_model);
+
+            bool isLocationCreate = false;
+
+            Guid locationId = Guid.Empty;            
+
+            while(!isLocationCreate)
+            {
+                Console.WriteLine("[ 1 ] - Create location ");
+                Console.WriteLine("[ 2 ] - Choose location ");
+                string input = Console.ReadLine() ?? "";
+                switch(input)
+                {
+                    case "1":
+                        CreateLocation();
+                        break;
+                    case "2":
+                        locationId = ChooseLocation(location_view_model);
+                        isLocationCreate = true;
+                        break;
+                    default:
+                        Console.WriteLine("Wrong input");
+                        break;
+                }
+                
+            }
 
             Console.WriteLine("Event category");
             Event.Category category = ChooseCategory();
@@ -292,9 +338,7 @@ namespace Eventer
 
             string current_email = user_view_model.CurrentUser!.Email;
 
-            event_view_model.CreateEvent(title, description, start_time, end_time, category, price, location_id, current_email);
-
-            
+            event_view_model.CreateEvent(title, description, start_time, end_time, category, price, locationId, current_email);
 
         }
 
@@ -376,7 +420,7 @@ namespace Eventer
             Console.Write("Your email - ");
             string email = Console.ReadLine() ?? "";
 
-            Console.Write("Crate password, at least 6 characters - ");
+            Console.Write("Create password, at least 6 characters - ");
             string password = Console.ReadLine() ?? "";
 
             bool is_success = user_view_model.RegisterUser(name, sur_name, email, password);
@@ -384,7 +428,7 @@ namespace Eventer
             if(is_success)
             {
                 Console.WriteLine(" Registration complete without problems ");
-                Console.WriteLine($"DEBAG: Users in list: {user_view_model.Users.Count}");
+                Console.WriteLine($"DEBUG: Users in list: {user_view_model.Users.Count}");
                 return true;
             }
             else
