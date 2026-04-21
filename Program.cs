@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks.Dataflow;
 using Eventer;
@@ -149,6 +150,7 @@ namespace Eventer
                 switch(input)
                 {
                     case "1":
+                        ShowEventInfo(selectedEvent);
                         break;
 
                     case "2":
@@ -173,6 +175,7 @@ namespace Eventer
             while(appState == AppState.UserMenu)
             {
                 Console.WriteLine("[ 1 ] - Information");
+                Console.WriteLine("[ 2 ] - Main menu");
                 string input = Console.ReadLine() ?? "";
 
                 switch(input)
@@ -180,6 +183,9 @@ namespace Eventer
                     case "1":
                         break;
 
+                    case "2":
+                        appState = AppState.MainMenu;
+                        break;
                     default:
                         Console.WriteLine("Invalid input");
                         break;
@@ -540,6 +546,23 @@ namespace Eventer
             }
             
 
+        }
+
+        static void ShowEventInfo(Guid selectedEventId)
+        {
+            var targetEvent = eventViewModel.Events.FirstOrDefault(e => e.Id == selectedEventId);
+            var targetLocation = locationViewModel.Locations.FirstOrDefault(l => l.Id == targetEvent!.LocationId);
+
+            Console.WriteLine("----- EVENT INFORMATION -----");
+            Console.WriteLine($"Event title - {targetEvent!.Title}");
+            Console.WriteLine($"Event description - {targetEvent!.Description}");
+            Console.WriteLine($"Event start time - {targetEvent!.StartTime}");
+            Console.WriteLine($"Event end time - {targetEvent.EndTime}");
+            Console.WriteLine($"Event title - {targetEvent!.Title}");
+            Console.WriteLine($"Event location title - {targetLocation!.Title}");
+            Console.WriteLine($"Event location address - {targetLocation!.Address}");
+            Console.WriteLine($"Event category - {targetEvent!.EventCategory}");
+            Console.WriteLine($"Event price - {targetEvent!.Price}");
         }
 
     }

@@ -115,28 +115,45 @@ namespace Eventer
             return query.OrderByDescending(e => e.StartTime).ToList();
         }
 
-        public void RegisteredUser(Event selectedEvent)
+        public bool RegisterUser(Guid selectedEventId)
         {
             ErrorMessage = null;
             IsBusy = true;
 
             try
             {
-                if(!selectedEvent.IsActive)
+                var targetEvent = Events.FirstOrDefault(e => e.Id == selectedEventId);
+
+                if(targetEvent == null)
+                {
+                    throw new Exception("Event not find");
+                }               
+
+                if(!targetEvent.IsActive)
                 {
                     throw new Exception("Event isn't active");
                 }
 
-                if(selectedEvent.StartTime < DateTime.Now)
+                if((targetEvent.StartTime - DateTime.Now).TotalHours < 1)
                 {
                     throw new Exception("Event already started");
                 }
 
-               bool isAlreadyRegistered = RegisteredUser.Contains(userViewModel.CurrentUser!.Id);
+                bool isAlreadyRegistered = targetEvent.RegisteredUsers.Contains(userViewModel.CurrentUser!.Id); 
+
+                if(isAlreadyRegistered)
+                {
+                    throw new Exception("User already registered");
+                }
+
+                targetEvent.RegisteredUsers.Add(userViewModel.CurrentUser.Id);
+                return true;
+
             }
             catch(Exception ex)
             {
                 ErrorMessage = ex.Message;
+                return false;
             }
             finally
             {
