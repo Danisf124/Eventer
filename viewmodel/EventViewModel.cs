@@ -14,8 +14,11 @@ namespace Eventer
         public string? ErrorMessage { get; private set; } // Error massage for exception
         public bool IsBusy { get; private set; } // flag for interface blocking
 
-        public EventViewModel()
+        private UserViewModel userViewModel;
+
+        public EventViewModel(UserViewModel userViewModel)
         {
+            this.userViewModel = userViewModel;
             Events = new List<Event>();
             ErrorMessage = null;
             IsBusy = false;
@@ -27,14 +30,15 @@ namespace Eventer
             Events.Add(new_event);
         }
 
-        public bool CreateEvent(string title, string description, DateTime start_time, DateTime end_time, Event.Category category, float price, Guid location_id, string owner_email)
+        public bool CreateEvent(string title, string description, DateTime start_time, DateTime end_time, Event.Category category, float price, Guid location_id)
         {
             IsBusy = true;
             ErrorMessage = null;
 
             try
             {
-                Event @event = new Event(title, description, start_time, end_time, location_id, category, price, owner_email);
+                string ownerEmail = userViewModel.CurrentUser!.Email;
+                Event @event = new Event(title, description, start_time, end_time, location_id, category, price, ownerEmail);
                 AddEvent(@event);
 
                 return true;
@@ -111,19 +115,34 @@ namespace Eventer
             return query.OrderByDescending(e => e.StartTime).ToList();
         }
 
-    
-        public List<Event> GetEvents(string keyword = "")
+        public void RegisteredUser(Event selectedEvent)
         {
-            
-            var query = Events.Where(e => e.IsActive);
-           
-            if (!string.IsNullOrWhiteSpace(keyword))
-            {
-               
-                query = query.Where(e => e.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase));
-            }
+            ErrorMessage = null;
+            IsBusy = true;
 
-            return query.OrderBy(e => e.StartTime).ToList();
+            try
+            {
+                if(!selectedEvent.IsActive)
+                {
+                    throw new Exception("Event isn't active");
+                }
+
+                if(selectedEvent.StartTime < DateTime.Now)
+                {
+                    throw new Exception("Event already started");
+                }
+
+               bool isAlreadyRegistered = RegisteredUser.Contains(userViewModel.CurrentUser!.Id);
+            }
+            catch(Exception ex)
+            {
+                ErrorMessage = ex.Message;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
+      
     }
 }

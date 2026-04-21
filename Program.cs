@@ -17,7 +17,7 @@ namespace Eventer
         
         static LocationViewModel locationViewModel = new LocationViewModel();
 
-        static EventViewModel eventViewModel = new EventViewModel();
+        static EventViewModel eventViewModel = new EventViewModel(userViewModel);
 
         enum AppState
         {
@@ -46,6 +46,9 @@ namespace Eventer
                         break;
                     case AppState.EventMenu:
                         ShowEventMenu();
+                        break;
+                    case AppState.UserMenu:
+                        ShowUserMenu();
                         break;
                 }
             }
@@ -132,6 +135,9 @@ namespace Eventer
 
         static void ShowEventMenu()
         {
+
+            Guid selectedEvent = FindEvent();
+
             while(appState == AppState.EventMenu)
             {
                 Console.WriteLine("[ 1 ] - Event information");
@@ -153,6 +159,25 @@ namespace Eventer
 
                     case "4":
                         appState = AppState.MainMenu;
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid input");
+                        break;
+                }
+            }
+        }
+
+        static void ShowUserMenu()
+        {
+            while(appState == AppState.UserMenu)
+            {
+                Console.WriteLine("[ 1 ] - Information");
+                string input = Console.ReadLine() ?? "";
+
+                switch(input)
+                {
+                    case "1":
                         break;
 
                     default:
@@ -354,11 +379,11 @@ namespace Eventer
 
             Console.WriteLine("Event Location ");
 
-            bool isLocationCreate = false;
+            bool isLocationChoose = false;
 
             Guid locationId = Guid.Empty;            
 
-            while(!isLocationCreate)
+            while(!isLocationChoose)
             {
                 Console.WriteLine("[ 1 ] - Create location ");
                 Console.WriteLine("[ 2 ] - Choose location ");
@@ -370,7 +395,7 @@ namespace Eventer
                         break;
                     case "2":
                         locationId = ChooseLocation(locationViewModel);
-                        isLocationCreate = true;
+                        isLocationChoose = true;
                         break;
                     default:
                         Console.WriteLine("Wrong input");
@@ -385,9 +410,8 @@ namespace Eventer
             Console.Write("Event price (in UAH) - ");
             float price = GetPriceFromUser();
 
-            string current_email = userViewModel.CurrentUser!.Email;
 
-            eventViewModel.CreateEvent(title, description, startTime, endTime, category, price, locationId, current_email);
+            eventViewModel.CreateEvent(title, description, startTime, endTime, category, price, locationId);
 
         }
 
@@ -430,7 +454,7 @@ namespace Eventer
             }
         }
 
-        static Event? FindEvent()
+        static Guid FindEvent()
         {
             Console.WriteLine("------- EVENT FIND -------");
 
@@ -447,11 +471,11 @@ namespace Eventer
             if(selectedEvent == null)
             {
                 Console.WriteLine("Event not found");
-                return null;
+                return Guid.Empty;
             }
             else
             {
-                return selectedEvent;
+                return selectedEvent.Id;
             }
             
         }

@@ -20,7 +20,7 @@ namespace Eventer
 
         private Guid _locationId;
 
-        private string _ownerEmail;
+        private string _ownerEmail = string.Empty;
 
         public enum Category
         {
@@ -163,6 +163,8 @@ namespace Eventer
             }
         }
 
+        public List<Guid> RegisteredUsers {get; private set;}
+
         public bool IsActive {get; set;}
 
         public Category EventCategory {get; set;}
@@ -190,6 +192,8 @@ namespace Eventer
             IsActive = true;
 
             OwnerEmail = owner_email;
+
+            RegisteredUsers = new List<Guid>();
         }
 
         public override string ToString()
