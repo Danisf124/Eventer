@@ -601,13 +601,24 @@ namespace Eventer
 
         static void CancelEventRegistration(Guid selectedEvent)
         {
-            if(eventViewModel.CancelEvent(selectedEvent))
+
+            Console.Write($"Do you want cancel this event (y -yes, n - no): ");
+            string confirm = Console.ReadLine() ?? "";
+
+            if(confirm.ToLower() == "y")
             {
-                Console.WriteLine("Cancel event registration complete");
+                if(eventViewModel.CancelEvent(selectedEvent))
+                {
+                    Console.WriteLine("Cancel event registration complete");
+                }
+                else
+                {
+                    Console.WriteLine(eventViewModel.ErrorMessage);
+                }
             }
             else
             {
-                Console.WriteLine(eventViewModel.ErrorMessage);
+                return;
             }
         }
     

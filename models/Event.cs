@@ -22,14 +22,14 @@ namespace Eventer
 
         private string _ownerEmail = string.Empty;
 
+        private double _price;
+
         public enum Category
         {
             // some category
             sport,
             cinema
         };
-
-        private double _price;
 
         public string Title
         {
@@ -88,6 +88,7 @@ namespace Eventer
                 {
                     throw new ArgumentException("start time can't be in past");
                 }
+
                 _startTime = value;
             }
         }
@@ -116,6 +117,7 @@ namespace Eventer
                 {
                     throw new ArgumentException("Location can't be empty!");
                 }
+
                 _locationId = value;
             }
         }
@@ -130,6 +132,7 @@ namespace Eventer
                 {
                     throw new ArgumentException("Invalid price");
                 }
+
                 _price = value;
             }
         }
@@ -154,11 +157,11 @@ namespace Eventer
                     throw new ArgumentException("Email can't be longer than 30 characters");
                 }
                 
-                string email_pattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
+                string email_pattern = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"; // Regex email pattern
 
                 if(!Regex.IsMatch(value, email_pattern))
                 {
-                    throw new ArgumentException("invalid Email format");
+                    throw new ArgumentException("Invalid Email format");
                 }
             }
         }
@@ -200,7 +203,7 @@ namespace Eventer
         {
             string formattedDate = StartTime.ToString("yyyy-MM-dd HH:mm");
 
-            return $"{EventCategory}, {Title} - {Price} грн, початок:({StartTime:dd.MM.yyyy HH.mm})";
+            return $"{EventCategory}, {Title} - {Price:N2} ₴ , start:({StartTime:dd.MM.yyyy HH.mm})";
         }
 
     }

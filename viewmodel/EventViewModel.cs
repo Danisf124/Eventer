@@ -16,7 +16,7 @@ namespace Eventer
 
         public bool IsEmpty => Events.Count == 0;
 
-        private UserViewModel userViewModel;
+        private UserViewModel userViewModel; // User view model for RegisterUser(ln. 136)
 
         public EventViewModel(UserViewModel userViewModel)
         {
@@ -31,7 +31,8 @@ namespace Eventer
         {
             Events.Add(new_event);
         }
-
+        
+        // Create Event for program
         public bool CreateEvent(string title, string description, DateTime start_time, DateTime end_time, Event.Category category, float price, Guid location_id)
         {
             IsBusy = true;
@@ -42,7 +43,7 @@ namespace Eventer
 
             try
             {
-                string ownerEmail = userViewModel.CurrentUser!.Email;
+                string ownerEmail = userViewModel.CurrentUser!.Email; // setting owner email 
                 Event @event = new Event(title, description, start_time, end_time, location_id, category, price, ownerEmail);
                 AddEvent(@event);
 
@@ -68,7 +69,7 @@ namespace Eventer
         public bool CancelEvent(Guid event_id)
         {
             IsBusy = true;
-            ErrorMessage = null; // clearing massages
+            ErrorMessage = null; 
 
             try
             {
@@ -92,7 +93,7 @@ namespace Eventer
                     throw new Exception("Cannot cancel event! Less than 1 hour left until start.");
                 }
 
-                target_event.RegisteredUsers.Remove(userViewModel.CurrentUser!.Id);
+                target_event.RegisteredUsers.Remove(userViewModel.CurrentUser!.Id); // Removing Event from list
 
                 return true;
             }
@@ -107,7 +108,7 @@ namespace Eventer
             }
         }   
         
-        
+        // Searching events with: keyword, category, price, start time.
         public List<Event> SearchEvents(string? keyword = null, Event.Category? category = null)
         {
             
@@ -117,7 +118,6 @@ namespace Eventer
             {
                 throw new Exception("No events in list");
             }
-
             
             if (!string.IsNullOrWhiteSpace(keyword))
             {
@@ -133,6 +133,7 @@ namespace Eventer
             return query.OrderByDescending(e => e.StartTime).ToList();
         }
 
+        // Register user on event in program
         public bool RegisterUser(Guid selectedEventId)
         {
             ErrorMessage = null;
@@ -145,23 +146,26 @@ namespace Eventer
                     throw new Exception("No events in list");
                 }
 
-                var targetEvent = Events.FirstOrDefault(e => e.Id == selectedEventId);
+                var targetEvent = Events.FirstOrDefault(e => e.Id == selectedEventId); // Search Event in list by id
 
                 if(targetEvent == null)
                 {
                     throw new Exception("Event not find");
                 }               
 
+                // Check if it's active
                 if(!targetEvent.IsActive)
                 {
                     throw new Exception("Event isn't active");
                 }
 
+                // Check time for registration
                 if((targetEvent.StartTime - DateTime.Now).TotalHours < 1)
                 {
-                    throw new Exception("Event already started");
+                    throw new Exception("Event almost started");
                 }
-
+                
+                // Check if user already registered on this event
                 bool isAlreadyRegistered = targetEvent.RegisteredUsers.Contains(userViewModel.CurrentUser!.Id); 
 
                 if(isAlreadyRegistered)
@@ -169,8 +173,9 @@ namespace Eventer
                     throw new Exception("User already registered");
                 }
 
-                targetEvent.RegisteredUsers.Add(userViewModel.CurrentUser.Id);
-                userViewModel.CurrentUser.RegisteredEvents.Add(selectedEventId);
+                targetEvent.RegisteredUsers.Add(userViewModel.CurrentUser.Id); // Registering user
+
+                userViewModel.CurrentUser.RegisteredEvents.Add(selectedEventId); // Add user to list of registered users
                 return true;
 
             }

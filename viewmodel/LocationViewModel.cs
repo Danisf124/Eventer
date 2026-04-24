@@ -18,9 +18,10 @@ namespace Eventer
             IsBusy = false;
             Locations = new List<Location>();
 
-            CreateLocation("nobody know where", "wall st. 12"); // seeding for debag
+            CreateLocation("nobody know where", "wall st. 12"); // seeding for debug
         }
         
+        // Add location to list
         public void AddLocation(Location location)
         {
             Locations.Add(location); 
@@ -33,6 +34,7 @@ namespace Eventer
 
             try
             {
+                //Checking is it's location already exist
                 if (Locations.Any(l => l.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
                 {
                     throw new Exception("Location already exist");

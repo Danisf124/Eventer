@@ -88,7 +88,7 @@ namespace Eventer
 
         }
         
-        
+        // Login user in program
         public bool LoginUser(string email, string password)
         {
             
@@ -103,7 +103,7 @@ namespace Eventer
                     throw new Exception("No users in list");
                 }
 
-                var user = Users.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+                var user = Users.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase)); // Searching user in list by email
 
                 if(user == null)
                 {
@@ -118,7 +118,7 @@ namespace Eventer
                     throw new Exception("Invalid Password");
                 }
 
-                CurrentUser = user;
+                CurrentUser = user; // sat session
 
                 return true;
             }
