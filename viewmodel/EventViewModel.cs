@@ -14,6 +14,8 @@ namespace Eventer
         public string? ErrorMessage { get; private set; } // Error massage for exception
         public bool IsBusy { get; private set; } // flag for interface blocking
 
+        public bool IsEmpty => Events.Count == 0;
+
         private UserViewModel userViewModel;
 
         public EventViewModel(UserViewModel userViewModel)
@@ -34,6 +36,9 @@ namespace Eventer
         {
             IsBusy = true;
             ErrorMessage = null;
+
+            Console.WriteLine($"DEBUG: CurrentUser = {userViewModel.CurrentUser?.Email ?? "NULL"}");
+            Console.WriteLine($"DEBUG: locationId = {location_id}");
 
             try
             {
@@ -56,17 +61,23 @@ namespace Eventer
         }
 
         /* Cancel Event in 3 steps:
-            1. Searching Event in list, if can't find: sat null 
+            1. Searching Event in list, if can't find: set null 
             2. Checking date, if event is leas then an hour, not allow delete
             3. If everything alright, cancel even(with soft delete) 
         */
-        public void CancelEvent(Guid event_id)
+        public bool CancelEvent(Guid event_id)
         {
             IsBusy = true;
             ErrorMessage = null; // clearing massages
 
             try
             {
+
+                if(IsEmpty)
+                {
+                    throw new Exception("No events in list");
+                }
+
                 // trying find Event in Events list(with Linq), e - element
                 var target_event = Events.FirstOrDefault(e => e.Id == event_id);
 
@@ -80,13 +91,15 @@ namespace Eventer
                 {
                     throw new Exception("Cannot cancel event! Less than 1 hour left until start.");
                 }
-                
-                // Soft delete
-                target_event.IsActive = false;
+
+                target_event.RegisteredUsers.Remove(userViewModel.CurrentUser!.Id);
+
+                return true;
             }
             catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
+                return false;
             }
             finally
             {
@@ -99,6 +112,11 @@ namespace Eventer
         {
             
             IEnumerable<Event> query = Events;
+
+            if(IsEmpty)
+            {
+                throw new Exception("No events in list");
+            }
 
             
             if (!string.IsNullOrWhiteSpace(keyword))
@@ -122,6 +140,11 @@ namespace Eventer
 
             try
             {
+                if(IsEmpty)
+                {
+                    throw new Exception("No events in list");
+                }
+
                 var targetEvent = Events.FirstOrDefault(e => e.Id == selectedEventId);
 
                 if(targetEvent == null)
@@ -147,6 +170,7 @@ namespace Eventer
                 }
 
                 targetEvent.RegisteredUsers.Add(userViewModel.CurrentUser.Id);
+                userViewModel.CurrentUser.RegisteredEvents.Add(selectedEventId);
                 return true;
 
             }

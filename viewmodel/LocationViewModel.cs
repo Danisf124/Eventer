@@ -9,12 +9,13 @@ namespace Eventer
         public List<Location> Locations {get; private set;}
 
         public string? ErrorMessage {get; private set;}
-        //public bool IsBusy {get; private set;}
+        public bool IsBusy {get; private set;}
+        public bool IsEmpty => Locations.Count == 0;
 
         public LocationViewModel()
         {
             ErrorMessage = null;
-            //IsBusy = false;
+            IsBusy = false;
             Locations = new List<Location>();
 
             CreateLocation("nobody know where", "wall st. 12"); // seeding for debag
@@ -27,7 +28,7 @@ namespace Eventer
 
         public bool CreateLocation(string title, string address, string? contact_info = null)
         {
-            //IsBusy = true;
+            IsBusy = true;
             ErrorMessage = null;
 
             try
@@ -48,6 +49,10 @@ namespace Eventer
             {
                 ErrorMessage = ex.Message;
                 return false;
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 

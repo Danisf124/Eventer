@@ -91,7 +91,7 @@ namespace Eventer
                         break;
 
                     default:
-                        Console.WriteLine(" Invalid input");
+                        Console.WriteLine("Invalid input");
                         break;
                 }
             }
@@ -139,11 +139,17 @@ namespace Eventer
 
             Guid selectedEvent = FindEvent();
 
+            if(selectedEvent == Guid.Empty)
+            {
+                appState = AppState.MainMenu;
+                return;
+            }
+
             while(appState == AppState.EventMenu)
             {
                 Console.WriteLine("[ 1 ] - Event information");
                 Console.WriteLine("[ 2 ] - Event registration");
-                Console.WriteLine("[ 3 ] - Cancel event");
+                Console.WriteLine("[ 3 ] - Cancel event registration");
                 Console.WriteLine("[ 4 ] - Main menu");
                 string input = Console.ReadLine() ?? "";
 
@@ -154,9 +160,11 @@ namespace Eventer
                         break;
 
                     case "2":
+                        RegisterUserOnEvent(selectedEvent);
                         break;
 
                     case "3":
+                        CancelEventRegistration(selectedEvent);
                         break;
 
                     case "4":
@@ -176,15 +184,19 @@ namespace Eventer
             {
                 Console.WriteLine("[ 1 ] - Information");
                 Console.WriteLine("[ 2 ] - Main menu");
+                Console.WriteLine("[ 3 ] - Show registered events");
                 string input = Console.ReadLine() ?? "";
 
                 switch(input)
                 {
                     case "1":
+                        ShowUserInfo();
                         break;
-
                     case "2":
                         appState = AppState.MainMenu;
+                        break;
+                    case "3":
+                        ShowRegisteredEvents();
                         break;
                     default:
                         Console.WriteLine("Invalid input");
@@ -365,6 +377,18 @@ namespace Eventer
             }
         }
 
+        static void RegisterUserOnEvent(Guid selectedEvent)
+        {
+            if(eventViewModel.RegisterUser(selectedEvent))
+            {
+                Console.WriteLine("You registered on event");
+            }
+            else
+            {
+                Console.WriteLine(eventViewModel.ErrorMessage);
+            }
+        }
+
         static void CreateEvent()
         {
             Console.WriteLine("------ EVENT CREATION ------");
@@ -417,7 +441,16 @@ namespace Eventer
             float price = GetPriceFromUser();
 
 
-            eventViewModel.CreateEvent(title, description, startTime, endTime, category, price, locationId);
+            bool isSuccess = eventViewModel.CreateEvent(title, description, startTime, endTime, category, price, locationId);
+
+            if(isSuccess)
+            {
+                Console.WriteLine("Event create");
+            }
+            else
+            {
+                Console.WriteLine($"Error: {eventViewModel.ErrorMessage}");
+            }
 
         }
 
@@ -563,6 +596,40 @@ namespace Eventer
             Console.WriteLine($"Event location address - {targetLocation!.Address}");
             Console.WriteLine($"Event category - {targetEvent!.EventCategory}");
             Console.WriteLine($"Event price - {targetEvent!.Price}");
+            Console.WriteLine("------------------------------");
+        }
+
+        static void CancelEventRegistration(Guid selectedEvent)
+        {
+            if(eventViewModel.CancelEvent(selectedEvent))
+            {
+                Console.WriteLine("Cancel event registration complete");
+            }
+            else
+            {
+                Console.WriteLine(eventViewModel.ErrorMessage);
+            }
+        }
+    
+        static void ShowUserInfo()
+        {
+            Console.WriteLine("----- USER INFORMATION ----- ");
+            Console.WriteLine($"User name - {userViewModel.CurrentUser!.Name}");
+            Console.WriteLine($"User surname - {userViewModel.CurrentUser!.SurName}");
+            Console.WriteLine($"User email - {userViewModel.CurrentUser!.Email}");
+        }
+
+        static void ShowRegisteredEvents()
+        {
+            foreach(Guid eventId in userViewModel.CurrentUser!.RegisteredEvents)
+            {
+                var targetEvent = eventViewModel.Events.FirstOrDefault(e => e.Id == eventId);
+
+                if(targetEvent != null)
+                {
+                    Console.WriteLine($"{targetEvent.Title}, {targetEvent.Price}, {targetEvent.EventCategory} ");
+                }
+            }
         }
 
     }

@@ -23,7 +23,7 @@ namespace Eventer
             SurName = sur_name;
             Email = email;
             Preferences = new List<Event.Category>();
-            SavedEvents = new List<Guid>();
+            RegisteredEvents = new List<Guid>();
             RegistrationDate = DateTime.Now;
         }
    
@@ -109,7 +109,7 @@ namespace Eventer
 
         public List<Event.Category> Preferences {get; private set;}
 
-        public List<Guid> SavedEvents {get; private set;}
+        public List<Guid> RegisteredEvents {get; private set;}
 
         public override string ToString()
         {

@@ -74,7 +74,7 @@ namespace Eventer
 
                 string phone_pattern = @"^\+?\d{10,15}$"; // Regex phone pattern
 
-                if(value != null && Regex.IsMatch(value, phone_pattern))
+                if(value != null && !Regex.IsMatch(value, phone_pattern))
                 {
                     throw new ArgumentException("Invalid phone format");
                 }

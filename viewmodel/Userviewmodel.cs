@@ -17,6 +17,7 @@ namespace Eventer
 
         public string? ErrorMessage { get; private set; }  // Error manages for exception
         public bool IsBusy { get; private set; } // flag for interface blocking
+        public bool IsEmpty => Users.Count == 0;
 
         public UserViewModel()
         {
@@ -69,6 +70,8 @@ namespace Eventer
                 SetPassword(password, user);
               
                 AddUser(user);
+
+                CurrentUser = user;
                 
                 // Operation compleat correct
                 return true;
@@ -88,10 +91,17 @@ namespace Eventer
         
         public bool LoginUser(string email, string password)
         {
+            
+            IsBusy = true;
+            ErrorMessage = null;
+
             try
             {
-                IsBusy = true;
-                ErrorMessage = null;
+
+                if(IsEmpty)
+                {
+                    throw new Exception("No users in list");
+                }
 
                 var user = Users.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
 
