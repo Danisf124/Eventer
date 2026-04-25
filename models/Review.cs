@@ -15,8 +15,6 @@ namespace Eventer
 
         private string? _comment;
 
-        public bool? EmptyComment {get; set;}
-
         public string? Comment 
         {
             get {return _comment;}

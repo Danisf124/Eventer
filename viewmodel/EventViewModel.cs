@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 
@@ -15,6 +16,8 @@ namespace Eventer
         public bool IsBusy { get; private set; } // flag for interface blocking
 
         public bool IsEmpty => Events.Count == 0;
+
+        private const int MaxEvents = 100;
 
         private UserViewModel userViewModel; // User view model for RegisterUser(ln. 136)
 
@@ -43,6 +46,11 @@ namespace Eventer
 
             try
             {
+                if(Events.Count >= MaxEvents)
+                {
+                    throw new Exception($"Event list is full, maximum {MaxEvents} events allowed");
+                }
+
                 string ownerEmail = userViewModel.CurrentUser!.Email; // setting owner email 
                 Event @event = new Event(title, description, start_time, end_time, location_id, category, price, ownerEmail);
                 AddEvent(@event);
@@ -131,6 +139,46 @@ namespace Eventer
 
             
             return query.OrderByDescending(e => e.StartTime).ToList();
+        }
+
+        public bool DeleteEvent(Guid selectedEventId)
+        {
+            try
+            {
+                if(IsEmpty)
+                {
+                    throw new Exception("No events in list");
+                }
+
+                // trying find Event in Events list(with Linq), e - element
+                var target_event = Events.FirstOrDefault(e => e.Id == selectedEventId);
+
+                if(target_event == null)
+                {
+                    throw new Exception("Can't find Event in list.");
+                }
+
+                // Checking time for cancel event
+                if((target_event.StartTime - DateTime.Now).TotalHours < 1)
+                {
+                    throw new Exception("Cannot cancel event! Less than 1 hour left until start.");
+                }
+
+                if(userViewModel.CurrentUser!.Email != target_event.OwnerEmail)
+                {
+                    throw new Exception("You can't delate this event, you not it's owner");
+                }
+
+                target_event.IsActive = false;
+                
+                return true;
+            }
+            catch(Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                return false;
+            }
+            
         }
 
         // Register user on event in program

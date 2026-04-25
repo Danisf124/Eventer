@@ -18,6 +18,8 @@ namespace Eventer
         
         static LocationViewModel locationViewModel = new LocationViewModel();
 
+        static TicketViewModel ticketViewModel = new TicketViewModel();
+
         static EventViewModel eventViewModel = new EventViewModel(userViewModel);
 
         enum AppState
@@ -150,7 +152,8 @@ namespace Eventer
                 Console.WriteLine("[ 1 ] - Event information");
                 Console.WriteLine("[ 2 ] - Event registration");
                 Console.WriteLine("[ 3 ] - Cancel event registration");
-                Console.WriteLine("[ 4 ] - Main menu");
+                Console.WriteLine("[ 4 ] - Show event ticket");
+                Console.WriteLine("[ 5 ] - Main menu");
                 string input = Console.ReadLine() ?? "";
 
                 switch(input)
@@ -160,7 +163,11 @@ namespace Eventer
                         break;
 
                     case "2":
-                        RegisterUserOnEvent(selectedEvent);
+
+                        if(RegisterUserOnEvent(selectedEvent))
+                        {
+                            CreateTicket(selectedEvent);
+                        }
                         break;
 
                     case "3":
@@ -168,6 +175,9 @@ namespace Eventer
                         break;
 
                     case "4":
+                        ShowTicket(selectedEvent);
+                        break;
+                    case "5":
                         appState = AppState.MainMenu;
                         break;
 
@@ -377,15 +387,17 @@ namespace Eventer
             }
         }
 
-        static void RegisterUserOnEvent(Guid selectedEvent)
+        static bool RegisterUserOnEvent(Guid selectedEvent)
         {
             if(eventViewModel.RegisterUser(selectedEvent))
             {
                 Console.WriteLine("You registered on event");
+                return true;
             }
             else
             {
                 Console.WriteLine(eventViewModel.ErrorMessage);
+                return false;
             }
         }
 
@@ -640,6 +652,37 @@ namespace Eventer
                 {
                     Console.WriteLine($"{targetEvent.Title}, {targetEvent.Price}, {targetEvent.EventCategory} ");
                 }
+            }
+        }
+
+        static void ShowTicket(Guid selectedEvent)
+        {
+            var targetEvent = eventViewModel.Events.FirstOrDefault(e => e.Id == selectedEvent);
+            
+            if(targetEvent == null)
+            {
+                Console.WriteLine("Can't find event");
+                return;
+            }
+
+            var targetLocation = locationViewModel.Locations.FirstOrDefault(l => l.Id == targetEvent!.LocationId);
+
+            Console.WriteLine("----- TICKET INFORMATION -----");
+            Console.WriteLine($"Event title {targetEvent!.Title}");
+            Console.WriteLine($"Event date {targetEvent!.StartTime}");
+            Console.WriteLine($"Event location {targetLocation!.Title}");
+            Console.WriteLine($"Event price {targetEvent!.Price}");
+            Console.WriteLine("------------------------------");
+
+        }
+
+        static void CreateTicket(Guid selectedEvent)
+        {
+            bool isUserRegistered = userViewModel.CurrentUser!.RegisteredEvents.Contains(selectedEvent);
+
+            if(isUserRegistered)
+            {
+                ticketViewModel.CreateTicket(userViewModel.CurrentUser.Id, selectedEvent);
             }
         }
 

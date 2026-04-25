@@ -21,5 +21,22 @@ namespace Eventer
         {
             Tickets.Add(ticket);
         }
+
+        public bool CreateTicket(Guid userId, Guid eventId)
+        {
+            ErrorMassage = null;
+
+            try
+            {
+                Ticket ticket = new Ticket(userId, eventId);
+                AddTicket(ticket);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                ErrorMassage = ex.Message;
+                return false;   
+            }
+        }
     }
 }
