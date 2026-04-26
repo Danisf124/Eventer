@@ -12,6 +12,8 @@ namespace Eventer
         public string? ErrorMassage {get; private set;}
         public bool IsBusy {get; private set;}
 
+        const int MaxReviews = 100;
+
         public ReviewViewMode()
         {
             Reviews = new List<Review>();
@@ -31,6 +33,12 @@ namespace Eventer
 
             try
             {
+
+                if(Reviews.Count >= MaxReviews)
+                {
+                    throw new Exception($"Event list is full, maximum {MaxReviews} events allowed");
+                }
+
                 Review review = new Review(event_id, user_id, rating, comment);
 
                 AddReview(review);

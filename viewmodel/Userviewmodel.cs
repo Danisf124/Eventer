@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
@@ -18,6 +19,8 @@ namespace Eventer
         public string? ErrorMessage { get; private set; }  // Error manages for exception
         public bool IsBusy { get; private set; } // flag for interface blocking
         public bool IsEmpty => Users.Count == 0;
+
+        const int MaxUsers = 100;
 
         public UserViewModel()
         {
@@ -50,6 +53,11 @@ namespace Eventer
 
             try
             {
+                if(Users.Count >= MaxUsers)
+                {
+                    throw new Exception($"Event list is full, maximum {MaxUsers} events allowed");
+                }
+
                 //Checking if email already exist
                 if(Users.Any(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase)))
                 {

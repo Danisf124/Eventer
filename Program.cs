@@ -678,12 +678,7 @@ namespace Eventer
 
         static void CreateTicket(Guid selectedEvent)
         {
-            bool isUserRegistered = userViewModel.CurrentUser!.RegisteredEvents.Contains(selectedEvent);
-
-            if(isUserRegistered)
-            {
-                ticketViewModel.CreateTicket(userViewModel.CurrentUser.Id, selectedEvent);
-            }
+            ticketViewModel.CreateTicket(userViewModel.CurrentUser!.Id, selectedEvent);
         }
 
     }

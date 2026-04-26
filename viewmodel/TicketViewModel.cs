@@ -10,6 +10,8 @@ namespace Eventer
         public string? ErrorMassage {get; private set;}
         public bool IsBusy {get; private set;}
 
+        const int MaxTickets = 100;  
+
         public TicketViewModel()
         {
             Tickets = new List<Ticket>();
@@ -28,6 +30,11 @@ namespace Eventer
 
             try
             {
+                if(Tickets.Count >= MaxTickets)
+                {
+                    throw new Exception($"Event list is full, maximum {MaxTickets} events allowed");
+                }
+
                 Ticket ticket = new Ticket(userId, eventId);
                 AddTicket(ticket);
                 return true;

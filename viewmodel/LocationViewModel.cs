@@ -12,6 +12,8 @@ namespace Eventer
         public bool IsBusy {get; private set;}
         public bool IsEmpty => Locations.Count == 0;
 
+        const int MaxLocations = 100;
+
         public LocationViewModel()
         {
             ErrorMessage = null;
@@ -39,6 +41,12 @@ namespace Eventer
                 {
                     throw new Exception("Location already exist");
                 }
+
+                if(Locations.Count >= MaxLocations)
+                {
+                    throw new Exception($"Event list is full, maximum {MaxLocations} events allowed");
+                }
+
 
                 Location location = new Location(title, address, contact_info = null);
 
