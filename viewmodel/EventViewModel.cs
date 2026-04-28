@@ -21,12 +21,9 @@ namespace Eventer
 
         private UserViewModel userViewModel; // User view model for RegisterUser(ln. 136)
 
-        private OrganizerViewModel organizerViewModel;
-
-        public EventViewModel(UserViewModel userViewModel, OrganizerViewModel organizerViewModel)
+        public EventViewModel(UserViewModel userViewModel)
         {
             this.userViewModel = userViewModel;
-            this.organizerViewModel = organizerViewModel;
             Events = new List<Event>();
             ErrorMessage = null;
             IsBusy = false;
@@ -44,7 +41,7 @@ namespace Eventer
             IsBusy = true;
             ErrorMessage = null;
 
-            Console.WriteLine($"DEBUG: CurrentUser = {organizerViewModel.CurrentUser?.Email ?? "NULL"}");
+            Console.WriteLine($"DEBUG: CurrentUser = {userViewModel.CurrentUser?.Email ?? "NULL"}");
             Console.WriteLine($"DEBUG: locationId = {location_id}");
 
             try
@@ -60,7 +57,7 @@ namespace Eventer
                     throw new Exception($"Event list is full, maximum {MaxEvents} events allowed");
                 }
 
-                string ownerEmail = organizerViewModel.CurrentUser!.Email; // setting owner email 
+                string ownerEmail = userViewModel.CurrentUser!.Email; // setting owner email 
                 Event @event = new Event(title, description, start_time, end_time, location_id, category, price, ownerEmail);
                 AddEvent(@event);
 
@@ -110,7 +107,7 @@ namespace Eventer
                     throw new Exception("Cannot cancel event! Less than 1 hour left until start.");
                 }
 
-                target_event.RegisteredUsers.Remove(organizerViewModel.CurrentUser!.Id); // Removing Event from list
+                target_event.RegisteredUsers.Remove(userViewModel.CurrentUser!.Id); // Removing Event from list
 
                 return true;
             }
@@ -125,10 +122,15 @@ namespace Eventer
             }
         }   
         
-        // Searching events with: keyword, category, price, start time.
-        public List<Event> SearchEvents(string? keyword = null, Event.Category? category = null)
+       // Searching events with: keyword, category, price range, and date range.
+        public List<Event> SearchEvents(
+            string? keyword = null, 
+            Event.Category? category = null,
+            double? minPrice = null,         
+            double? maxPrice = null,         
+            DateTime? startingFrom = null,    
+            DateTime? endingBefore = null)   
         {
-            
             IEnumerable<Event> query = Events;
 
             if(IsEmpty)
@@ -136,17 +138,41 @@ namespace Eventer
                 throw new Exception("No events in list");
             }
             
+            
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 query = query.Where(e => e.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase));
             }
 
+        
             if (category.HasValue)
             {
                 query = query.Where(e => e.EventCategory == category.Value);
             }
 
             
+            if (minPrice.HasValue)
+            {
+                query = query.Where(e => e.Price >= minPrice.Value);
+            }
+
+        
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(e => e.Price <= maxPrice.Value);
+            }
+
+            if (startingFrom.HasValue)
+            {
+                query = query.Where(e => e.StartTime >= startingFrom.Value);
+            }
+
+        
+            if (endingBefore.HasValue)
+            {
+                query = query.Where(e => e.EndTime <= endingBefore.Value);
+            }
+
             return query.OrderByDescending(e => e.StartTime).ToList();
         }
 

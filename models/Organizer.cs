@@ -11,11 +11,11 @@ namespace Eventer
 
         public List<Review> Reviews {get; private set;}
 
-        private string _contactInfo = string.Empty;
+        private string? _contactInfo;
 
         public string ContactInfo 
         {
-            get {return _contactInfo;} 
+            get {return _contactInfo!;} 
 
             set
             {

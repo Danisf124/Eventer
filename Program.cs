@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Data.Common;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -14,14 +15,14 @@ namespace Eventer
 {
     class Program
     {
-        static UserViewModel userViewModel = new UserViewModel();
+
+        static OrganizerViewModel userViewModel = new OrganizerViewModel();
         
         static LocationViewModel locationViewModel = new LocationViewModel();
 
         static TicketViewModel ticketViewModel = new TicketViewModel();
-        static OrganizerViewModel organizerViewModel = new OrganizerViewModel();
 
-        static EventViewModel eventViewModel = new EventViewModel(userViewModel, organizerViewModel);
+        static EventViewModel eventViewModel = new EventViewModel(userViewModel);
 
         enum AppState
         {
@@ -196,6 +197,7 @@ namespace Eventer
                 Console.WriteLine("[ 1 ] - Information");
                 Console.WriteLine("[ 2 ] - Main menu");
                 Console.WriteLine("[ 3 ] - Show registered events");
+                Console.WriteLine("[ 4 ] - Became organizer");
                 string input = Console.ReadLine() ?? "";
 
                 switch(input)
@@ -208,6 +210,9 @@ namespace Eventer
                         break;
                     case "3":
                         ShowRegisteredEvents();
+                        break;
+                    case "4":
+                        BecameOrganizer();
                         break;
                     default:
                         Console.WriteLine("Invalid input");
@@ -686,6 +691,27 @@ namespace Eventer
         {
             ticketViewModel.CreateTicket(userViewModel.CurrentUser!.Id, selectedEvent);
         }
+
+        static void BecameOrganizer()
+        {
+
+            Console.WriteLine("Do you want became organizer(y - yes, n - no)");
+            Console.WriteLine("You need add your phone number");
+            string input = Console.ReadLine() ?? "";
+
+            switch(input)
+            {
+                case "y":
+                    Console.WriteLine("Enter your phone number");
+                    string contactInfo = Console.ReadLine() ?? "";
+                    userViewModel.UpgradeToOrganizer(contactInfo);
+                    break;
+                case "n":
+                    return;
+                    
+            }
+        }
+            
 
     }
 }
