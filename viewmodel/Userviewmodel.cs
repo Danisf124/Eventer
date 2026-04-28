@@ -12,15 +12,15 @@ namespace Eventer
 {
     internal class UserViewModel
     {
-        public List<User> Users {get; private set;}
+        public List<User> Users {get; protected set;}
 
-        public User? CurrentUser {get; private set;}
+        public User? CurrentUser {get; protected set;}
 
-        public string? ErrorMessage { get; private set; }  // Error manages for exception
-        public bool IsBusy { get; private set; } // flag for interface blocking
+        public string? ErrorMessage { get; protected set; }  // Error manages for exception
+        public bool IsBusy { get; protected set; } // flag for interface blocking
         public bool IsEmpty => Users.Count == 0;
 
-        const int MaxUsers = 100;
+        protected const int MaxUsers = 100;
 
         public UserViewModel()
         {
