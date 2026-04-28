@@ -21,9 +21,12 @@ namespace Eventer
 
         private UserViewModel userViewModel; // User view model for RegisterUser(ln. 136)
 
-        public EventViewModel(UserViewModel userViewModel)
+        private OrganizerViewModel organizerViewModel;
+
+        public EventViewModel(UserViewModel userViewModel, OrganizerViewModel organizerViewModel)
         {
             this.userViewModel = userViewModel;
+            this.organizerViewModel = organizerViewModel;
             Events = new List<Event>();
             ErrorMessage = null;
             IsBusy = false;
@@ -41,17 +44,23 @@ namespace Eventer
             IsBusy = true;
             ErrorMessage = null;
 
-            Console.WriteLine($"DEBUG: CurrentUser = {userViewModel.CurrentUser?.Email ?? "NULL"}");
+            Console.WriteLine($"DEBUG: CurrentUser = {organizerViewModel.CurrentUser?.Email ?? "NULL"}");
             Console.WriteLine($"DEBUG: locationId = {location_id}");
 
             try
             {
+
+                if(!(userViewModel.CurrentUser is Organizer))
+                {
+                    throw new Exception(" Only organizers can create events");
+                }
+
                 if(Events.Count >= MaxEvents)
                 {
                     throw new Exception($"Event list is full, maximum {MaxEvents} events allowed");
                 }
 
-                string ownerEmail = userViewModel.CurrentUser!.Email; // setting owner email 
+                string ownerEmail = organizerViewModel.CurrentUser!.Email; // setting owner email 
                 Event @event = new Event(title, description, start_time, end_time, location_id, category, price, ownerEmail);
                 AddEvent(@event);
 
@@ -101,7 +110,7 @@ namespace Eventer
                     throw new Exception("Cannot cancel event! Less than 1 hour left until start.");
                 }
 
-                target_event.RegisteredUsers.Remove(userViewModel.CurrentUser!.Id); // Removing Event from list
+                target_event.RegisteredUsers.Remove(organizerViewModel.CurrentUser!.Id); // Removing Event from list
 
                 return true;
             }

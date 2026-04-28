@@ -22,6 +22,8 @@ namespace Eventer
 
                 organizer.PasswordHash = user.PasswordHash;
 
+                CurrentUser = organizer;
+
                 return true;
 
             }

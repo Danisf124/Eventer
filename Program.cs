@@ -19,8 +19,9 @@ namespace Eventer
         static LocationViewModel locationViewModel = new LocationViewModel();
 
         static TicketViewModel ticketViewModel = new TicketViewModel();
+        static OrganizerViewModel organizerViewModel = new OrganizerViewModel();
 
-        static EventViewModel eventViewModel = new EventViewModel(userViewModel);
+        static EventViewModel eventViewModel = new EventViewModel(userViewModel, organizerViewModel);
 
         enum AppState
         {
@@ -403,6 +404,11 @@ namespace Eventer
 
         static void CreateEvent()
         {
+            if(!(userViewModel.CurrentUser is Organizer))
+            {
+                Console.WriteLine("Only organizers can create events");
+                return;
+            }
             Console.WriteLine("------ EVENT CREATION ------");
 
             Console.WriteLine("Please, enter your information");
